@@ -1,15 +1,23 @@
 const express = require('express');
-const dotenv = require('dotenv');
-// Importar rutas
-const userRoutes = require('./routes/userRoutes'); 
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
 
-dotenv.config();
 const app = express();
+
+app.use(cors());
 app.use(express.json());
-app.use('/api/users', userRoutes); 
 
+app.use(express.static(path.join(__dirname, 'public')));
 
-const PORT = process.env.PORT || 3000;
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
+
+app.get('/reset', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'reset-password.html'));
+});
+
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+    console.log(`Server is running in the port ${PORT}`);
 });
